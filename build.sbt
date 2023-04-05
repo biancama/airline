@@ -1,27 +1,99 @@
-val Http4sVersion = "0.23.18"
-val CirceVersion = "0.14.3"
-val MunitVersion = "0.7.29"
-val LogbackVersion = "1.2.11"
-val MunitCatsEffectVersion = "1.0.7"
+import Dependencies._
+ThisBuild / scalaVersion := "2.13.8"
+ThisBuild / version := "2.0.0"
+ThisBuild / organization := "com.flexdevit"
+ThisBuild / organizationName := "FlexDevIT"
+
+ThisBuild / evictionErrorLevel := Level.Warn
+ThisBuild / scalafixDependencies += Libraries.organizeImports
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+
+
+val scalafixCommonSettings = inConfig(IntegrationTest)(scalafixConfigSettings(IntegrationTest))
 
 lazy val root = (project in file("."))
   .settings(
-    organization := "com.flexdevit",
-    name := "airline",
-    version := "0.0.1-SNAPSHOT",
-    scalaVersion := "2.13.10",
+    name := "airline"
+  )
+  .aggregate(core, tests)
+
+lazy val tests = (project in file("modules/tests"))
+  .configs(IntegrationTest)
+  .settings(
+    name := "airline-test-suite",
+    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info"),
+    testFrameworks += new TestFramework("weaver.framework.CatsEffect"),
+    Defaults.itSettings,
+    scalafixCommonSettings,
     libraryDependencies ++= Seq(
-      "org.http4s"      %% "http4s-ember-server" % Http4sVersion,
-      "org.http4s"      %% "http4s-ember-client" % Http4sVersion,
-      "org.http4s"      %% "http4s-circe"        % Http4sVersion,
-      "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
-      "io.circe"        %% "circe-generic"       % CirceVersion,
-      "org.scalameta"   %% "munit"               % MunitVersion           % Test,
-      "org.typelevel"   %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
-      "ch.qos.logback"  %  "logback-classic"     % LogbackVersion         % Runtime,
-      "org.scalameta"   %% "svm-subs"            % "20.2.0"
+      CompilerPlugin.kindProjector,
+      CompilerPlugin.betterMonadicFor,
+      CompilerPlugin.semanticDB,
+      Libraries.catsLaws,
+      Libraries.log4catsNoOp,
+      Libraries.monocleLaw,
+      Libraries.refinedScalacheck,
+      Libraries.weaverCats,
+      Libraries.weaverDiscipline,
+      Libraries.weaverScalaCheck,
+      Libraries.munitCats
+    )
+  )
+  .dependsOn(core)
+
+lazy val core = (project in file("modules/core"))
+  .enablePlugins(DockerPlugin)
+  .enablePlugins(AshScriptPlugin)
+  .settings(
+    organization := "com.flexdevit",
+    name := "airline-core",
+    version := "0.0.1-SNAPSHOT",
+    Docker / packageName := "shopping-cart",
+    scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info"),
+    scalafmtOnCompile := true,
+    resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
+    Defaults.itSettings,
+    scalafixCommonSettings,
+    dockerBaseImage := "openjdk:11-jre-slim-buster",
+    dockerExposedPorts ++= Seq(8080),
+    makeBatScripts := Seq(),
+    dockerUpdateLatest := true,
+    libraryDependencies ++= Seq(
+      CompilerPlugin.kindProjector,
+      CompilerPlugin.betterMonadicFor,
+      CompilerPlugin.semanticDB,
+      Libraries.catsEffect,
+      Libraries.catsRetry,
+      Libraries.circeCore,
+      Libraries.circeGeneric,
+      Libraries.circeParser,
+      Libraries.circeRefined,
+      Libraries.cirisCore,
+      Libraries.cirisEnum,
+      Libraries.cirisRefined,
+      Libraries.derevoCore,
+      Libraries.derevoCats,
+      Libraries.derevoCirce,
+      Libraries.fs2,
+      Libraries.http4sDsl,
+      Libraries.http4sServer,
+      Libraries.http4sClient,
+      Libraries.http4sCirce,
+      Libraries.http4sJwtAuth,
+      Libraries.javaxCrypto,
+      Libraries.log4cats,
+      Libraries.logback % Runtime,
+      Libraries.monocleCore,
+      Libraries.newtype,
+      Libraries.redis4catsEffects,
+      Libraries.redis4catsLog4cats,
+      Libraries.refinedCore,
+      Libraries.refinedCats,
+      Libraries.skunkCore,
+      Libraries.skunkCirce,
+      Libraries.squants,
+      Libraries.svmSubs
     ),
-    addCompilerPlugin("org.typelevel" %% "kind-projector"     % "0.13.2" cross CrossVersion.full),
-    addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
-    testFrameworks += new TestFramework("munit.Framework")
+    addCommandAlias("runLinter", ";scalafixAll --rules OrganizeImports")
+
   )
