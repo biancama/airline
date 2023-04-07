@@ -1,39 +1,22 @@
 package com.flexdevit.airline
 
-import cats.effect.Async
-import cats.syntax.all._
-import com.comcast.ip4s._
-import org.http4s.ember.client.EmberClientBuilder
-import org.http4s.ember.server.EmberServerBuilder
-import org.http4s.implicits._
-import org.http4s.server.middleware.Logger
+import cats.effect.IO
+import cats.effect.std.Supervisor
+import com.flexdevit.airline.config.Config
+import com.flexdevit.airline.modules.HttpApi
+import com.flexdevit.airline.resources.MkHttpServer
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object AirlineServer {
+  implicit val logger = Slf4jLogger.getLogger[IO]
 
-  def run[F[_]: Async]: F[Nothing] = {
-    for {
-      client <- EmberClientBuilder.default[F].build
-      helloWorldAlg = HelloWorld.impl[F]
-      jokeAlg = Jokes.impl[F](client)
+  def run: IO[Unit] = {
 
-      // Combine Service Routes into an HttpApp.
-      // Can also be done via a Router if you
-      // want to extract segments not checked
-      // in the underlying routes.
-      httpApp = (
-        AirlineRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        AirlineRoutes.jokeRoutes[F](jokeAlg)
-      ).orNotFound
-
-      // With Middlewares in place
-      finalHttpApp = Logger.httpApp(true, true)(httpApp)
-
-      _ <- 
-        EmberServerBuilder.default[F]
-          .withHost(ipv4"0.0.0.0")
-          .withPort(port"8080")
-          .withHttpApp(finalHttpApp)
-          .build
-    } yield ()
-  }.useForever
+    Config.load[IO].flatMap { config =>
+      Supervisor[IO].use { implicit sp =>
+        val api      = HttpApi.make[IO]
+        MkHttpServer[IO].newEmber(config.httpServerConfig, api.httpApp).useForever
+      }
+    }
+  }
 }
