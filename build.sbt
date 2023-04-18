@@ -1,19 +1,41 @@
 import Dependencies._
 ThisBuild / scalaVersion := "2.13.8"
-ThisBuild / version := "2.0.0"
+ThisBuild / version := "1.0.0"
 ThisBuild / organization := "com.flexdevit"
 ThisBuild / organizationName := "FlexDevIT"
 
 ThisBuild / evictionErrorLevel := Level.Warn
 ThisBuild / scalafixDependencies += Libraries.organizeImports
-resolvers ++= Resolver.sonatypeOssRepos("snapshots")
-
 
 val scalafixCommonSettings = inConfig(IntegrationTest)(scalafixConfigSettings(IntegrationTest))
+lazy val settings =
+  (name := "airline") ++
+    commonSettings
+
+lazy val compilerOptions = Seq(
+  "-unchecked",
+  "-feature",
+  "-language:existentials",
+  "-language:higherKinds",
+  "-language:implicitConversions",
+  "-language:postfixOps",
+  "-deprecation",
+  "-encoding",
+  "utf8"
+)
+
+lazy val commonSettings = Seq(
+  scalacOptions ++= compilerOptions,
+  resolvers ++= Seq(
+    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository") ++
+    Resolver.sonatypeOssRepos("releases") ++
+    Resolver.sonatypeOssRepos("snapshots")
+  )
+
 
 lazy val root = (project in file("."))
   .settings(
-    name := "airline"
+    settings
   )
   .aggregate(core, tests)
 
@@ -40,18 +62,22 @@ lazy val tests = (project in file("modules/tests"))
     )
   )
   .dependsOn(core)
+// set the main class for packaging the main jar
+//Compile / packageBin / mainClass := Some("com.flexdevit.airline.Main")
 
-lazy val core = (project in file("modules/core"))
+// set the main class for the main 'sbt run' task
+//Compile / run / mainClass := Some("com.flexdevit.airline.Main")
+
+lazy val core =  (project in file("modules/core"))
   .enablePlugins(DockerPlugin)
   .enablePlugins(AshScriptPlugin)
   .settings(
     organization := "com.flexdevit",
     name := "airline-core",
     version := "0.0.1-SNAPSHOT",
-    Docker / packageName := "shopping-cart",
+    Docker / packageName := "airline",
     scalacOptions ++= List("-Ymacro-annotations", "-Yrangepos", "-Wconf:cat=unused:info"),
     scalafmtOnCompile := true,
-    resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
     Defaults.itSettings,
     scalafixCommonSettings,
     dockerBaseImage := "openjdk:11-jre-slim-buster",

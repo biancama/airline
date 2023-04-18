@@ -23,13 +23,12 @@ object Dependencies {
 
     val betterMonadicFor = "0.3.1"
     val kindProjector    = "0.13.2"
-    val logback          = "1.2.11"
     val organizeImports  = "0.6.0"
     val semanticDB       = "4.5.8"
 
     val weaver = "0.7.12"
     val munitVersion = "0.7.29"
-    val logbackVersion = "1.2.11"
+    val logback = "1.2.11"
     val munitCatsEffectVersion = "1.0.7"
     val svmSubs = "20.2.0"
   }
