@@ -62,11 +62,6 @@ lazy val tests = (project in file("modules/tests"))
     )
   )
   .dependsOn(core)
-// set the main class for packaging the main jar
-//Compile / packageBin / mainClass := Some("com.flexdevit.airline.Main")
-
-// set the main class for the main 'sbt run' task
-//Compile / run / mainClass := Some("com.flexdevit.airline.Main")
 
 lazy val core =  (project in file("modules/core"))
   .enablePlugins(DockerPlugin)
@@ -97,6 +92,7 @@ lazy val core =  (project in file("modules/core"))
       Libraries.cirisCore,
       Libraries.cirisEnum,
       Libraries.cirisRefined,
+      Libraries.comCast,
       Libraries.derevoCore,
       Libraries.derevoCats,
       Libraries.derevoCirce,
@@ -105,7 +101,6 @@ lazy val core =  (project in file("modules/core"))
       Libraries.http4sServer,
       Libraries.http4sClient,
       Libraries.http4sCirce,
-      Libraries.http4sJwtAuth,
       Libraries.javaxCrypto,
       Libraries.log4cats,
       Libraries.logback % Runtime,
@@ -115,8 +110,9 @@ lazy val core =  (project in file("modules/core"))
       Libraries.redis4catsLog4cats,
       Libraries.refinedCore,
       Libraries.refinedCats,
-      Libraries.skunkCore,
-      Libraries.skunkCirce,
+//      Libraries.skunkCore,
+//      Libraries.skunkCirce,
+//      Libraries.slf4jApi,
       Libraries.squants,
       Libraries.svmSubs
     ),

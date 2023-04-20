@@ -26,7 +26,18 @@ sealed abstract class HttpApi[F[_]: Async] private (services: Services[F]) {
     { http: HttpRoutes[F] =>
       AutoSlash(http)
     } andThen { http: HttpRoutes[F] =>
-      CORS(http)
+      {
+        CORS.policy.withAllowHeadersAll(http)
+//      val methodConfig = CORSConfig(
+//        anyOrigin = true,
+//        anyMethod = false,
+//        allowedMethods = Some(Set("GET", "POST")),
+//        allowCredentials = true,
+//        maxAge = 1.day.toSeconds)
+//      val config = CORSConfig.default.withAllowedCredentials(false)
+//      CORS(http, config)
+      }
+
     } andThen { http: HttpRoutes[F] =>
       Timeout(60.seconds)(http)
     }
