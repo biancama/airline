@@ -5,7 +5,13 @@ import cats.Functor
 import cats.data.EitherT
 import com.flexdevit.airline.domain.airline.airline.Airline
 
-class AirlineService[F[_]: Functor](airlineRepository: AirlineRepositoryAlgebra[F]) {
+trait AirlineService[F[_]] {
+  def create(airline: Airline): F[Airline]
+  def get(id: Long): EitherT[F, AirlineNotFoundError.type, Airline]
+  def findAll: F[List[Airline]]
+  def delete(id: Long): EitherT[F, AirlineNotFoundError.type, Airline]
+}
+class AirlineServiceImpl[F[_]: Functor](airlineRepository: AirlineRepositoryAlgebra[F]) extends AirlineService[F]{
 
   def create(airline: Airline): F[Airline] = airlineRepository.create(airline)
   def get(id: Long): EitherT[F, AirlineNotFoundError.type, Airline] =
@@ -16,7 +22,7 @@ class AirlineService[F[_]: Functor](airlineRepository: AirlineRepositoryAlgebra[
 
 }
 
-object AirlineService {
+object AirlineServiceImpl {
   def make[F[_]: Functor](airlineRepository: AirlineRepositoryAlgebra[F]): AirlineService[F] =
-    new AirlineService(airlineRepository)
+    new AirlineServiceImpl(airlineRepository)
 }

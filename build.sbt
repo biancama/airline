@@ -21,17 +21,16 @@ lazy val compilerOptions = Seq(
   "-language:postfixOps",
   "-deprecation",
   "-encoding",
+  "-Ylog-classpath",
   "utf8"
 )
 
 lazy val commonSettings = Seq(
   scalacOptions ++= compilerOptions,
-  resolvers ++= Seq(
-    "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository") ++
+  resolvers ++= Seq("Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository") ++
     Resolver.sonatypeOssRepos("releases") ++
     Resolver.sonatypeOssRepos("snapshots")
-  )
-
+)
 
 lazy val root = (project in file("."))
   .settings(
@@ -58,12 +57,16 @@ lazy val tests = (project in file("modules/tests"))
       Libraries.weaverCats,
       Libraries.weaverDiscipline,
       Libraries.weaverScalaCheck,
-      Libraries.munitCats
+      Libraries.scalaTest,
+      Libraries.mockitoScalaTestPlus
+//      Libraries.munitCats,
+//      Libraries.scalaMock
+      //Libraries.scalaTestPlus
     )
   )
   .dependsOn(core)
 
-lazy val core =  (project in file("modules/core"))
+lazy val core = (project in file("modules/core"))
   .enablePlugins(DockerPlugin)
   .enablePlugins(AshScriptPlugin)
   .settings(
@@ -117,5 +120,4 @@ lazy val core =  (project in file("modules/core"))
       Libraries.svmSubs
     ),
     addCommandAlias("runLinter", ";scalafixAll --rules OrganizeImports")
-
   )

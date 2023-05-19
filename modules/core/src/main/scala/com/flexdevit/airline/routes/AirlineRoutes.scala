@@ -11,7 +11,7 @@ import org.http4s.server.Router
 import org.http4s._
 import org.http4s.circe._
 import org.http4s.headers.Location
-import com.flexdevit.airline.domain.airline.AirlineService
+import com.flexdevit.airline.domain.airline.{AirlineService}
 import io.circe.syntax._
 import org.http4s.circe.CirceEntityCodec._
 

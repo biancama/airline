@@ -27,11 +27,15 @@ object Dependencies {
     val organizeImports  = "0.6.0"
     val semanticDB       = "4.5.8"
 
-    val weaver = "0.7.12"
+    val weaver = "0.8.3"
     val munitVersion = "0.7.29"
     val logback = "1.3.6"
     val munitCatsEffectVersion = "1.0.7"
     val svmSubs = "20.2.0"
+    val scalaMock = "5.2.0"
+    val scalaTest = "3.2.15"
+    val scalaCheck = "1.17.0"
+    val scalaTestPlus = "3.2.10.0"
   }
 
   object Libraries {
@@ -90,7 +94,7 @@ object Dependencies {
     // Test
     val catsLaws          = "org.typelevel"       %% "cats-laws"          % V.cats
     val log4catsNoOp      = "org.typelevel"       %% "log4cats-noop"      % V.log4cats
-    val monocleLaw        = "dev.optics"          %% "monocle-law"        % V.monocle
+    val monocleLaw        = "dev.optics"          %% "monocle-core"        % V.monocle
     val refinedScalacheck = "eu.timepit"          %% "refined-scalacheck" % V.refined
     val weaverCats        = "com.disneystreaming" %% "weaver-cats"        % V.weaver
     val weaverDiscipline  = "com.disneystreaming" %% "weaver-discipline"  % V.weaver
@@ -98,8 +102,12 @@ object Dependencies {
     val munit             = "org.scalameta"       %% "munit"              % V.munitVersion
     val munitCats         = "org.typelevel"       %% "munit-cats-effect-3"% V.munitCatsEffectVersion
     val svmSubs           = "org.scalameta"       %% "svm-subs"           % V.svmSubs
+    val scalaTest =       "org.scalatest"         %% "scalatest"          % V.scalaTest
+    val scalaCheck =      "org.scalacheck"        %% "scalacheck"         % V.scalaCheck
+    val mockitoScalaTestPlus =   "org.scalatestplus"     %% "mockito-3-4"    % V.scalaTestPlus
     // Scalafix rules
     val organizeImports = "com.github.liancheng" %% "organize-imports" % V.organizeImports
+
   }
 
   object CompilerPlugin {
