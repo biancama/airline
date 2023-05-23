@@ -21,7 +21,7 @@ final case class AirlineRoutes[F[_]: Concurrent](airlineService: AirlineService[
   private def createAirline(airlineService: AirlineService[F]): ReqToRes[F] = {
     case req @ POST -> Root =>
       for {
-        createAirLine <- req.as[createAirlineParam]
+        createAirLine <- req.as[CreateAirlineParam]
         airline       <- airlineService.create(createAirLine.toDomain)
         location = s"$prefixPath/${airline.id.get}"
         res <- Created.headers(Headers(Location(Uri.unsafeFromString(location))))

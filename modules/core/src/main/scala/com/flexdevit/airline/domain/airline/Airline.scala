@@ -1,12 +1,14 @@
 package com.flexdevit.airline.domain.airline
 
-import derevo.cats.{ eqv, show }
-import derevo.circe.magnolia.{ decoder, encoder }
+import derevo.cats.{eqv, show}
+import derevo.circe.magnolia.{decoder, encoder}
 import derevo.derive
 import eu.timepit.refined.types.all.NonEmptyString
 import io.estatico.newtype.macros.newtype
 import eu.timepit.refined.auto._
 import eu.timepit.refined.cats._
+import io.circe.{Codec, Decoder, Encoder}
+import io.circe.generic.semiauto.{deriveCodec, deriveDecoder, deriveEncoder}
 import io.circe.refined._
 
 object airline {
@@ -23,8 +25,8 @@ object airline {
   ) {}
 
   object Airline {
-    //    implicit final val AirlineCodec: Codec[Airline] = deriveCodec
-    //    implicit final val AirlineListCodec: Codec[List[Airline]] = deriveCodec
+    implicit val jsonEncoder: Encoder.AsObject[Airline] = deriveEncoder[Airline]
+    implicit val jsonDecoder: Decoder[Airline] = deriveDecoder[Airline]
 
   }
 
@@ -53,7 +55,7 @@ object airline {
   @newtype
   case class AirlineCountryParam(value: NonEmptyString)
   @derive(decoder, encoder, show)
-  case class createAirlineParam(
+  case class CreateAirlineParam(
       name: AirlineNameParam,
       alias: AirlineAliasParam,
       iataId: AirlineIataIdParam,

@@ -1,6 +1,8 @@
 package com.flexdevit.airline
 
-import com.flexdevit.airline.domain.airline.airline.Airline
+import com.flexdevit.airline.domain.airline.airline._
+import eu.timepit.refined.scalacheck.all.nonEmptyStringArbitrary
+import eu.timepit.refined.types.string.NonEmptyString
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{long, oneOf}
 import org.scalacheck.{Arbitrary, Gen}
@@ -14,16 +16,35 @@ trait AirlineArbitraries {
   }
   def airline(genId: Gen[Option[Long]]) = for {
     id <- genId
-    name <- Gen.nonEmptyListOf(Gen.asciiPrintableChar).map(_.mkString)
-    alias <- Gen.nonEmptyListOf(Gen.asciiPrintableChar).map(_.mkString)
-    iataId <- arbitrary[String]
+    name <- strGen(10)
+    alias <- strGen(5)
+    iataId <- strGen(3)
     icaoId <- strGen(3)
     callSign <- strGen(3)
     country <- oneOf(countries)
     active <- arbitrary[Boolean]
   } yield Airline(id, name, alias, iataId, icaoId, callSign, country, active)
 
-  val airlineNotCreated = airlineArb(Gen.const(Option.empty[Long]))
+  def airlineParam = for {
+    name <- arbitrary[NonEmptyString].map(AirlineNameParam(_))
+    alias <- arbitrary[NonEmptyString].map(AirlineAliasParam(_))
+    iataId <- arbitrary[NonEmptyString].map(AirlineIataIdParam(_))
+    icaoId <- arbitrary[NonEmptyString].map(AirlineIcaoIdParam(_))
+    callSign <- arbitrary[NonEmptyString].map(AirlineCallSignParam(_))
+    country <- arbitrary[NonEmptyString].map(AirlineCountryParam(_))
+  } yield CreateAirlineParam(name, alias, iataId, icaoId, callSign, country)
 
-  val airlines: Arbitrary[List[Airline]] = Arbitrary(Gen.containerOf[List, Airline](airline(Gen.option(long))))
+
+  val airlineNotCreated: Arbitrary[CreateAirlineParam] = Arbitrary(airlineParam)
+  def airlineCreated(airlineParam: Arbitrary[CreateAirlineParam]) : Arbitrary[Airline] = Arbitrary(for {
+    airline <- airlineParam.arbitrary
+    id <- long
+  } yield Airline(Some(id), airline.name.value.value, airline.alias.value.value, airline.iataId.value.value, airline.icaoId.value.value, airline.callSign.value.value, airline.country.value.value, true))
+
+  val airlines: Arbitrary[List[Airline]] = Arbitrary(Gen.containerOf[List, Airline](airline(long.map(Some(_)))))
+  val airlineTupled: Arbitrary[(CreateAirlineParam, Long)] = Arbitrary(for {
+    airNotCreated <- airlineNotCreated.arbitrary
+    id <- long
+  } yield (airNotCreated, id))
+
 }
