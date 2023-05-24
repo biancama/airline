@@ -35,4 +35,10 @@ trait HttpSuite extends SimpleIOSuite with Checkers {
         exists(resp.headers.headers)(i => expect.eql(header, i))
       case None => failure("route not found")
     }
+
+  def expectHttpFailure(routes: HttpRoutes[IO], req: Request[IO]): IO[Expectations] =
+    routes.run(req).value.attempt.map {
+      case Left(_) => success
+      case Right(_) => failure("expected a failure")
+    }
 }

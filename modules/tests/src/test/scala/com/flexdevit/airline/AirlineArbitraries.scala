@@ -36,10 +36,7 @@ trait AirlineArbitraries {
 
 
   val airlineNotCreated: Arbitrary[CreateAirlineParam] = Arbitrary(airlineParam)
-  def airlineCreated(airlineParam: Arbitrary[CreateAirlineParam]) : Arbitrary[Airline] = Arbitrary(for {
-    airline <- airlineParam.arbitrary
-    id <- long
-  } yield Airline(Some(id), airline.name.value.value, airline.alias.value.value, airline.iataId.value.value, airline.icaoId.value.value, airline.callSign.value.value, airline.country.value.value, true))
+  val airlineCreated: Arbitrary[Airline] = Arbitrary(airline(long.map(Some(_))))
 
   val airlines: Arbitrary[List[Airline]] = Arbitrary(Gen.containerOf[List, Airline](airline(long.map(Some(_)))))
   val airlineTupled: Arbitrary[(CreateAirlineParam, Long)] = Arbitrary(for {
