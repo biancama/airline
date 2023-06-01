@@ -10,16 +10,18 @@ object Dependencies {
     val ciris         = "2.3.2"
     val comCast       = "3.3.0"
     val derevo        = "0.13.0"
+    val doobie        = "1.0.0-M5"
     val javaxCrypto   = "1.0.1"
+    val flyway        = "9.19.1"
     val fs2           = "3.6.1"
     val http4s        = "0.23.18"
     val http4sJwtAuth = "1.2.0"
     val log4cats      = "2.5.0"
     val monocle       = "3.2.0"
     val newtype       = "0.4.4"
+    val postgreSQL    = "42.6.0"
     val refined       = "0.10.3"
     val redis4cats    = "1.4.1"
-    val skunk         = "0.3.1"
     val squants       = "1.8.3"
 
     val betterMonadicFor = "0.3.1"
@@ -42,6 +44,8 @@ object Dependencies {
     def circe(artifact: String): ModuleID  = "io.circe"   %% s"circe-$artifact"  % V.circe
     def ciris(artifact: String): ModuleID  = "is.cir"     %% artifact            % V.ciris
     def derevo(artifact: String): ModuleID = "tf.tofu"    %% s"derevo-$artifact" % V.derevo
+
+    def doobie(artifact: String): ModuleID = "org.tpolecat"    %% s"doobie-$artifact" % V.doobie
     def http4s(artifact: String): ModuleID = "org.http4s" %% s"http4s-$artifact" % V.http4s excludeAll(
       ExclusionRule(organization = "org.slf4j", name = "slf4j-api"))
 
@@ -66,6 +70,15 @@ object Dependencies {
     val derevoCats  = derevo("cats")
     val derevoCirce = derevo("circe-magnolia")
 
+    val doobieCore = doobie("core")
+    val doobieH2 = doobie("h2")
+    val doobieHikari = doobie("hikari")
+    val doobiePostgres = doobie("postgres")
+    val doobieScalaTest = doobie("scalatest")
+
+
+    val flyway   = "org.flywaydb" % "flyway-core" % V.flyway
+
     val http4sDsl    = http4s("dsl")
     val http4sServer = http4s("ember-server")
     val http4sClient = http4s("ember-client")
@@ -74,6 +87,8 @@ object Dependencies {
     val http4sJwtAuth = "dev.profunktor" %% "http4s-jwt-auth" % V.http4sJwtAuth
 
     val monocleCore = "dev.optics" %% "monocle-core" % V.monocle
+
+    val postgreSQL =  "org.postgresql" % "postgresql" % V.postgreSQL
 
     val refinedCore = "eu.timepit" %% "refined"      % V.refined
     val refinedCats = "eu.timepit" %% "refined-cats" % V.refined

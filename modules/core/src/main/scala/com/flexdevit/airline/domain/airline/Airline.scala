@@ -7,7 +7,7 @@ import eu.timepit.refined.types.all.NonEmptyString
 import io.estatico.newtype.macros.newtype
 import eu.timepit.refined.auto._
 import eu.timepit.refined.cats._
-import io.circe.{Codec, Decoder, Encoder}
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.semiauto.{deriveCodec, deriveDecoder, deriveEncoder}
 import io.circe.refined._
 

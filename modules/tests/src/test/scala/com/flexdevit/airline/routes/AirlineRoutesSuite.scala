@@ -7,13 +7,11 @@ import com.flexdevit.airline.AirlineArbitraries
 import com.flexdevit.airline.domain.AirlineNotFoundError
 import com.flexdevit.airline.domain.airline.AirlineService
 import com.flexdevit.airline.domain.airline.airline.Airline
-import com.flexdevit.airline.routes.HealthRoutesSuite.expectHttpStatus
 import org.http4s.Method._
 import org.http4s._
 import org.http4s.client.dsl.io._
 import org.http4s.syntax.literals._
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar.mock
 import org.typelevel.ci.CIString
 import suite.HttpSuite

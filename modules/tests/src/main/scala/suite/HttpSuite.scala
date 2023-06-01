@@ -6,10 +6,9 @@ import io.circe.Encoder
 import io.circe.syntax.EncoderOps
 import org.http4s.Header.Raw
 import org.http4s.circe.toMessageSyntax
-import org.http4s.syntax.header
-import org.http4s.{Header, Headers, HttpRoutes, Request, Status}
-import weaver.{Expectations, SimpleIOSuite}
+import org.http4s.{Header, HttpRoutes, Request, Status}
 import weaver.scalacheck.Checkers
+import weaver.{Expectations, SimpleIOSuite}
 
 trait HttpSuite extends SimpleIOSuite with Checkers {
   def expectHttpBodyAndStatus[A: Encoder](routes: HttpRoutes[IO], req: Request[IO])(
