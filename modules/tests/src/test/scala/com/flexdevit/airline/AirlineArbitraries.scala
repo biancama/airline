@@ -7,8 +7,9 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen.{long, oneOf}
 import org.scalacheck.{Arbitrary, Gen}
 
-trait AirlineArbitraries {
+  trait AirlineArbitraries {
   val strGen = (n: Int) => Gen.listOfN(n, Gen.alphaChar).map(_.mkString)
+  val optionString = (n: Int) => Gen.option(strGen(n))
 
   val countries = Set("ITA", "NED", "FRA", "USA")
   def airlineArb(id: Gen[Option[Long]]): Arbitrary[Airline] = Arbitrary[Airline] {
@@ -17,7 +18,7 @@ trait AirlineArbitraries {
   def airline(genId: Gen[Option[Long]]) = for {
     id <- genId
     name <- strGen(10)
-    alias <- strGen(5)
+    alias <- optionString(5)
     iataId <- strGen(3)
     icaoId <- strGen(3)
     callSign <- strGen(3)
@@ -27,11 +28,11 @@ trait AirlineArbitraries {
 
   def airlineParam = for {
     name <- arbitrary[NonEmptyString].map(AirlineNameParam(_))
-    alias <- arbitrary[NonEmptyString].map(AirlineAliasParam(_))
-    iataId <- arbitrary[NonEmptyString].map(AirlineIataIdParam(_))
-    icaoId <- arbitrary[NonEmptyString].map(AirlineIcaoIdParam(_))
-    callSign <- arbitrary[NonEmptyString].map(AirlineCallSignParam(_))
-    country <- arbitrary[NonEmptyString].map(AirlineCountryParam(_))
+    alias <- arbitrary[Option[String]].map(AirlineAliasParam(_))
+    iataId <- arbitrary[String].map(AirlineIataIdParam(_))
+    icaoId <- arbitrary[String].map(AirlineIcaoIdParam(_))
+    callSign <- arbitrary[String].map(AirlineCallSignParam(_))
+    country <- arbitrary[String].map(AirlineCountryParam(_))
   } yield CreateAirlineParam(name, alias, iataId, icaoId, callSign, country)
 
 

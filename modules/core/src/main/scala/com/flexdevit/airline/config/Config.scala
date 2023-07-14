@@ -1,12 +1,12 @@
 package com.flexdevit.airline.config
 
 import cats.effect.kernel.Async
-import cats.implicits.{catsSyntaxTuple7Parallel}
+import cats.implicits.catsSyntaxTuple7Parallel
 import ciris.refined.refTypeConfigDecoder
 import ciris.{ConfigValue, env}
 import com.comcast.ip4s.{Host, IpLiteralSyntax, Port}
 import com.flexdevit.airline.config.AppEnvironment.{Production, Test}
-import com.flexdevit.airline.config.types.{AppConfig, HttpServerConfig, PostgreSQLConfig}
+import com.flexdevit.airline.config.types.{AppConfig, DatabaseConfig, DatabaseConnectionsConfig, HttpServerConfig}
 import eu.timepit.refined.types.all.{NonEmptyString, PosInt}
 
 object Config {
@@ -37,8 +37,8 @@ object Config {
           host = Host.fromString(h).getOrElse(host"0.0.0.0"),
           port = Port.fromInt(p).getOrElse(port"8080")
         ),
-        PostgreSQLConfig(
-          driver = postgresDriver, url = postgresUrl, user = postgresUser, password = postgresPwd, poolSize = postgresPoolSize
+        DatabaseConfig(
+          driver = postgresDriver.value, url = postgresUrl.value, user = postgresUser.value, password = postgresPwd.value, connections = DatabaseConnectionsConfig(postgresPoolSize.value)
         )
       )
     }

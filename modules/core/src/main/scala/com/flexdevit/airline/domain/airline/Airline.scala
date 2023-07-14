@@ -8,7 +8,7 @@ import io.estatico.newtype.macros.newtype
 import eu.timepit.refined.auto._
 import eu.timepit.refined.cats._
 import io.circe.{Decoder, Encoder}
-import io.circe.generic.semiauto.{deriveCodec, deriveDecoder, deriveEncoder}
+import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.refined._
 
 object airline {
@@ -16,7 +16,7 @@ object airline {
   case class Airline(
       id: Option[Long] = None,
       name: String,
-      alias: String,
+      alias: Option[String],
       iataId: String,
       icaoId: String,
       callSign: String,
@@ -37,23 +37,23 @@ object airline {
 
   @derive(decoder, encoder, show)
   @newtype
-  case class AirlineAliasParam(value: NonEmptyString)
+  case class AirlineAliasParam(value: Option[String])
 
   @derive(decoder, encoder, show)
   @newtype
-  case class AirlineIataIdParam(value: NonEmptyString)
+  case class AirlineIataIdParam(value: String)
 
   @derive(decoder, encoder, show)
   @newtype
-  case class AirlineIcaoIdParam(value: NonEmptyString)
+  case class AirlineIcaoIdParam(value: String)
 
   @derive(decoder, encoder, show)
   @newtype
-  case class AirlineCallSignParam(value: NonEmptyString)
+  case class AirlineCallSignParam(value: String)
 
   @derive(decoder, encoder, show)
   @newtype
-  case class AirlineCountryParam(value: NonEmptyString)
+  case class AirlineCountryParam(value: String)
   @derive(decoder, encoder, show)
   case class CreateAirlineParam(
       name: AirlineNameParam,
@@ -67,11 +67,11 @@ object airline {
       Airline(
         None,
         name.value.value,
-        alias.value.value,
-        iataId.value.value,
-        icaoId.value.value,
-        callSign.value.value,
-        country.value.value,
+        alias.value,
+        iataId.value,
+        icaoId.value,
+        callSign.value,
+        country.value,
         true
       )
   }
